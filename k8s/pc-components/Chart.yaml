@@ -1,0 +1,6 @@
+apiVersion: v2
+name: pc-components
+version: 0.1.0
+appVersion: "0.4.0"
+description: FastAPI, React frontend, PostgreSQL and Alembic migrations for Lab 04
+type: application

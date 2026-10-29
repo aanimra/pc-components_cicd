@@ -1,0 +1,41 @@
+api:
+  replicas: 1
+  image:
+    repository: pc-components-api
+    tag: lab
+    pullPolicy: IfNotPresent
+  port: 8000
+
+frontend:
+  replicas: 1
+  image:
+    repository: pc-components-frontend
+    tag: lab
+    pullPolicy: IfNotPresent
+  port: 80
+
+migration:
+  image:
+    repository: pc-components-migrator
+    tag: lab
+    pullPolicy: IfNotPresent
+  backoffLimit: 3
+
+db:
+  image: postgres:16-alpine
+  port: 5432
+  name: pccomponents
+  user: pcuser
+  auth:
+    # For classroom use only. OVERRIDE this when installing with --set-string.
+    password: lab-demo-change-me
+  storage:
+    size: 1Gi
+    # Existing kind cluster from Lab 3; set to a Ready worker shown by kubectl get nodes.
+    nodeName: lectures-worker
+    hostPath: /var/local/pc-components-lab4
+
+ingress:
+  enabled: false
+  className: traefik
+  host: pc-components.lab.test

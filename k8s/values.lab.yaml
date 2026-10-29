@@ -1,0 +1,15 @@
+# Local kind cluster ('lectures'); Docker images are loaded with kind load docker-image.
+api:
+  replicas: 1
+frontend:
+  replicas: 1
+migration:
+  backoffLimit: 3
+db:
+  storage:
+    nodeName: lectures-worker
+# Enable after installing a supported Ingress controller such as Traefik.
+ingress:
+  enabled: false
+  className: traefik
+  host: pc-components.lab.test

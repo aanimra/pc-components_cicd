@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "pc-components.fullname" . }}-postgres-data
+  labels:
+    {{- include "pc-components.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ include "pc-components.scopedname" . }}-manual
+  volumeName: {{ include "pc-components.scopedname" . }}-postgres-pv
+  resources:
+    requests:
+      storage: {{ .Values.db.storage.size }}

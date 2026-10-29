@@ -1,0 +1,5 @@
+PC Components installed in namespace {{ .Release.Namespace }}.
+
+View resources: kubectl get deploy,sts,pods,svc,pvc,jobs -n {{ .Release.Namespace }}
+Open local UI: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "pc-components.fullname" . }}-frontend 8080:80
+Then browse http://localhost:8080
