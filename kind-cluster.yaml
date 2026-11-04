@@ -11,6 +11,11 @@ networking:
 
 nodes:
   - role: control-plane
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 80
+        listenAddress: "127.0.0.1"
+        protocol: TCP
   - role: control-plane
   - role: control-plane
   - role: worker

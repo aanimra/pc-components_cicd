@@ -1,0 +1,28 @@
+# Traefik Ingress Controller is cluster infrastructure, installed by Helm
+# as a separate release (traefik) in namespace ingress-system.
+# Kubernetes Ingress resources for this app are owned by pc-components Chart.
+# Published host port 80 -> kind control-plane port 30080 -> Traefik NodePort.
+deployment:
+  replicas: 1
+service:
+  type: NodePort
+ports:
+  web:
+    nodePort: 30080
+  websecure:
+    expose:
+      default: false
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: traefik
+providers:
+  kubernetesIngress:
+    enabled: true
+  kubernetesCRD:
+    enabled: false
+ingressRoute:
+  dashboard:
+    enabled: false
+accessLog:
+  enabled: true

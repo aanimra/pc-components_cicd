@@ -10,7 +10,7 @@ spec:
   rules:
     - host: {{ .Values.ingress.host | quote }}
       http:
-        paths:
+        paths:     
           - path: /api
             pathType: Prefix
             backend:
@@ -18,6 +18,15 @@ spec:
                 name: {{ include "pc-components.fullname" . }}-api
                 port:
                   number: {{ .Values.api.port }}
+          {{- range list "/docs" "/redoc" "/openapi.json" "/live" "/ready" }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "pc-components.fullname" $ }}-api
+                port:
+                  number: {{ $.Values.api.port }}
+          {{- end }}
           - path: /
             pathType: Prefix
             backend:
