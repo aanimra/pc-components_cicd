@@ -4,9 +4,6 @@ frontend:
   replicas: 1
 migration:
   backoffLimit: 3
-db:
-  storage:
-    nodeName: lectures-worker
 ingress:
   enabled: true
   className: traefik

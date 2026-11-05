@@ -1,0 +1,26 @@
+# Docker Desktop Kubernetes (context docker-desktop) with its integrated LoadBalancer.
+# This differs from the earlier, separately-created kind-lectures cluster.
+deployment:
+  replicas: 1
+service:
+  type: LoadBalancer
+ports:
+  web:
+    exposedPort: 80
+  websecure:
+    expose:
+      default: false
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: traefik
+providers:
+  kubernetesIngress:
+    enabled: true
+  kubernetesCRD:
+    enabled: false
+ingressRoute:
+  dashboard:
+    enabled: false
+accessLog:
+  enabled: true

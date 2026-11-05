@@ -10,6 +10,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   backoffLimit: {{ .Values.migration.backoffLimit }}
+  activeDeadlineSeconds: 600
   template:
     metadata:
       labels:
@@ -17,6 +18,43 @@ spec:
         app.kubernetes.io/component: migration
     spec:
       restartPolicy: Never
+      # PostgreSQL can need time to initialize its data directory after a cold start.
+      # Check a real authenticated SQL connection before running Alembic.
+      initContainers:
+        - name: wait-for-postgres
+          image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag }}"
+          imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+          env:
+            {{- include "pc-components.db-env" . | nindent 12 }}
+          command:
+            - python
+            - -c
+            - |
+              import sys
+              import time
+              from sqlalchemy import create_engine, text
+              from app.database import get_database_url
+
+              engine = create_engine(get_database_url(), pool_pre_ping=True)
+              for attempt in range(1, 61):
+                  try:
+                      with engine.connect() as conn:
+                          conn.execute(text("SELECT 1"))
+                      print("PostgreSQL connection is ready", flush=True)
+                      sys.exit(0)
+                  except Exception as exc:
+                      print(f"Waiting for PostgreSQL ({attempt}/60): {type(exc).__name__}", flush=True)
+                      time.sleep(2)
+              sys.exit("Cannot connect to PostgreSQL; check Service, PVC and credentials")
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
       containers:
         - name: migration
           image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag }}"

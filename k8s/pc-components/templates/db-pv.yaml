@@ -13,13 +13,6 @@ spec:
   storageClassName: {{ include "pc-components.scopedname" . }}-manual
   volumeMode: Filesystem
   hostPath:
-    path: {{ .Values.db.storage.hostPath | quote }}
+    path: {{ printf "%s/%s" (trimSuffix "/" .Values.db.storage.hostPath) (include "pc-components.scopedname" .) | quote }}
     type: DirectoryOrCreate
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - {{ .Values.db.storage.nodeName | quote }}
+

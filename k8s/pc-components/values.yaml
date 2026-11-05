@@ -31,8 +31,8 @@ db:
     password: lab-demo-change-me
   storage:
     size: 1Gi
-    # Existing kind cluster from Lab 3; set to a Ready worker shown by kubectl get nodes.
-    nodeName: lectures-worker
+    # For the local single-node demo. Data is stored on the Kubernetes node,
+    # not permanently on the Windows filesystem. Do not reset the cluster.
     hostPath: /var/local/pc-components-lab4
 
 ingress:

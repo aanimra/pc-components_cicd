@@ -5,5 +5,5 @@ metadata:
   labels:
     {{- include "pc-components.labels" . | nindent 4 }}
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 reclaimPolicy: Retain
