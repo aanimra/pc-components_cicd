@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-backups
+  namespace: demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # kind зазвичай має StorageClass 'standard' із динамічним provisioner.
+  # Перевірте: kubectl get storageclass. За іншої назви замініть тут.
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi

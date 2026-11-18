@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: databasebackup-controller
+  namespace: demo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: databasebackup-controller
+  template:
+    metadata:
+      labels:
+        app: databasebackup-controller
+    spec:
+      serviceAccountName: databasebackup-controller
+      containers:
+        - name: controller
+          image: databasebackup-controller:lab
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POSTGRES_CLIENT_IMAGE
+              value: postgres:16-alpine
+            - name: WATCH_TIMEOUT_SECONDS
+              value: "15"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsNonRoot: true

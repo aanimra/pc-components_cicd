@@ -1,0 +1,25 @@
+# Тимчасовий Pod для pg_restore --list і відновлення в окрему базу.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backup-inspector
+  namespace: demo
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  containers:
+    - name: postgres-tools
+      image: postgres:16-alpine
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-c", "sleep 86400"]
+      envFrom:
+        - secretRef:
+            name: users-db-connection
+      volumeMounts:
+        - name: backups
+          mountPath: /backups
+          readOnly: true
+  volumes:
+    - name: backups
+      persistentVolumeClaim:
+        claimName: postgres-backups
